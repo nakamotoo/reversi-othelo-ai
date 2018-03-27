@@ -1,4 +1,3 @@
-#include <cstdlib>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -7,43 +6,19 @@
 
 #include "board.hpp"
 #include "human_player.hpp"
+#include "option_parser.hpp"
 #include "sample_computer_player.hpp"
 
 int main(int argc, char* argv[])
 {
 	using namespace reversi;
 
-	std::unordered_map<std::string, std::function<std::unique_ptr<Player>(Side)>> player_types = {
+	const std::unordered_map<std::string, std::function<std::unique_ptr<Player>(Side)>> player_types = {
 	    {"human", [](Side side) { return std::make_unique<HumanPlayer>(side); }},
 	    {"sample", [](Side side) { return std::make_unique<SampleComputerPlayer>(side); }},
 	};
 
-	auto make_player_from_arg = [&](Side side, const std::string& arg) {
-		auto it = player_types.find(arg);
-		if (it == player_types.end()) {
-			std::cerr << arg << " is not a valid type!" << std::endl;
-			std::exit(1);
-		}
-		return it->second(side);
-	};
-	auto make_player = [&](Side side) {
-		while (true) {
-			std::cout << "Input the " << side << " player type > ";
-			std::string type;
-			std::cin >> type;
-			auto it = player_types.find(type);
-			if (it == player_types.end()) {
-				std::cout << type << " is not a valid type!" << std::endl;
-				continue;
-			}
-			return it->second(side);
-		}
-	};
-
-	const auto black_player
-	    = argc >= 3 ? make_player_from_arg(Side::BLACK, argv[1]) : make_player(Side::BLACK);
-	const auto white_player
-	    = argc >= 3 ? make_player_from_arg(Side::WHITE, argv[2]) : make_player(Side::WHITE);
+	auto command_line_params = parseCommandLineOptions(argc, argv, player_types);
 
 	Board board;
 
@@ -63,10 +38,12 @@ int main(int argc, char* argv[])
 			continue;
 		}
 
-		auto& player = turn == Side::BLACK ? *black_player : *white_player;
+		auto& turn_player = turn == Side::BLACK
+		                        ? *command_line_params.black_player
+		                        : *command_line_params.white_player;
 
 		int x, y;
-		std::tie(x, y) = player.thinkNextMove(board);
+		std::tie(x, y) = turn_player.thinkNextMove(board);
 		if (!board.isLegalMove(x, y, turn)) {
 			std::cout << "turn = " << turn << ", illegal move (x, y) = (" << x << ", " << y << ")\n"
 			          << std::endl;
