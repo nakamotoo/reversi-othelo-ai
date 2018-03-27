@@ -50,13 +50,13 @@ CommandLineParams parseCommandLineOptions(int argc, char* argv[], const TypeStrT
 		std::exit(1);
 	}
 	if (argc < 3) {
-		std::cerr << "too few arguments!" << std::endl;
+		std::cerr << "Too few arguments!" << std::endl;
 		printSimpleUsage(std::cerr, argv[0]);
 		std::cerr << "Try '" << argv[0] << " -h' for more information." << std::endl;
 		std::exit(1);
 	}
 	if (argc > 3) {
-		std::cerr << "too many arguments!" << std::endl;
+		std::cerr << "Too many arguments!" << std::endl;
 		printSimpleUsage(std::cerr, argv[0]);
 		std::cerr << "Try '" << argv[0] << " -h' for more information." << std::endl;
 		std::exit(1);
