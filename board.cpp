@@ -39,7 +39,7 @@ std::ostream& operator<<(std::ostream& os, const Disk disk)
 namespace
 {
 
-constexpr std::array<std::tuple<int, int>, 8> DIRECTIONS = {
+constexpr std::array<std::tuple<int, int>, 8> DIRECTIONS = {{
     std::make_tuple(-1, -1),
     std::make_tuple(-1, 0),
     std::make_tuple(-1, 1),
@@ -48,7 +48,7 @@ constexpr std::array<std::tuple<int, int>, 8> DIRECTIONS = {
     std::make_tuple(1, -1),
     std::make_tuple(1, 0),
     std::make_tuple(1, 1),
-};
+}};
 
 int countBoundedDisks(const Board& board, int x, int y, const Disk disk, const std::tuple<int, int> direction)
 {
@@ -91,7 +91,7 @@ Disk Board::get(const int x, const int y) const
 {
 	assert(0 <= x && x < WIDTH);
 	assert(0 <= y && y < HEIGHT);
-	return m_states[y][x];
+	return m_states[static_cast<std::size_t>(y)][static_cast<std::size_t>(x)];
 }
 
 void Board::set(const int x, const int y, const Disk disk)
@@ -99,7 +99,7 @@ void Board::set(const int x, const int y, const Disk disk)
 	assert(0 <= x && x < WIDTH);
 	assert(0 <= y && y < HEIGHT);
 	assert(disk == Disk::NONE || disk == Disk::BLACK || disk == Disk::WHITE);
-	m_states[y][x] = disk;
+	m_states[static_cast<std::size_t>(y)][static_cast<std::size_t>(x)] = disk;
 }
 
 bool Board::isLegalMove(const int x, const int y, const Disk disk) const
