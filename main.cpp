@@ -65,7 +65,8 @@ int main(int argc, char* argv[])
 
 		auto& player = turn == Disk::BLACK ? *black_player : *white_player;
 
-		auto[x, y] = player.thinkNextMove(board);
+		int x, y;
+		std::tie(x, y) = player.thinkNextMove(board);
 		if (!board.isLegalMove(x, y, turn)) {
 			std::cout << "turn = " << turn << ", illegal move (x, y) = (" << x << ", " << y << ")\n"
 			          << std::endl;
