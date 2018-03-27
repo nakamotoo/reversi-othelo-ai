@@ -42,18 +42,15 @@ int main(int argc, char* argv[])
 		                        ? *command_line_params.black_player
 		                        : *command_line_params.white_player;
 
-		int x, y;
-		std::tie(x, y) = turn_player.thinkNextMove(board);
-		if (!board.isLegalMove(x, y, turn)) {
-			std::cout << "turn = " << turn << ", illegal move (x, y) = (" << x << ", " << y << ")\n"
-			          << std::endl;
-			break;
+		auto move = turn_player.thinkNextMove(board);
+		if (!board.isLegalMove(move, turn)) {
+			std::cout << "turn = " << turn << ", illegal move = " << move << std::endl;
+			std::exit(1);
 		}
-		std::cout << "turn = " << turn << ", move = "
-		          << static_cast<char>('a' + x) << static_cast<char>('1' + y) << "\n"
+		std::cout << "turn = " << turn << ", move = " << move << "\n"
 		          << std::endl;
 
-		board.placeDisk(x, y, turn);
+		board.placeDisk(move, turn);
 	}
 
 	return 0;

@@ -18,7 +18,7 @@ public:
 		return m_side;
 	}
 
-	virtual std::tuple<int, int> thinkNextMove(const Board& board) = 0;
+	virtual CellPosition thinkNextMove(const Board& board) = 0;
 
 private:
 	Side m_side;

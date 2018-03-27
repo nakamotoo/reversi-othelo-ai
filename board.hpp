@@ -3,7 +3,6 @@
 #include <array>
 #include <cstdint>
 #include <iostream>
-#include <tuple>
 #include <vector>
 
 namespace reversi
@@ -28,6 +27,15 @@ enum class CellState : std::uint8_t
 
 CellState getOwnState(Side side);
 
+struct CellPosition
+{
+	int x;
+	int y;
+};
+
+std::ostream& operator<<(std::ostream& os, CellPosition position);
+CellPosition parseCellPosition(const std::string& str);
+
 class Board
 {
 public:
@@ -36,15 +44,17 @@ public:
 
 	Board();
 
-	CellState get(int x, int y) const;
-	void set(int x, int y, CellState state);
+	CellState get(CellPosition position) const;
+	void set(CellPosition position, CellState state);
 
-	bool isLegalMove(int x, int y, Side side) const;
-	std::vector<std::tuple<int, int>> getAllLegalMoves(Side side) const;
+	bool isLegalMove(CellPosition position, Side side) const;
+	std::vector<CellPosition> getAllLegalMoves(Side side) const;
 
-	void placeDisk(int x, int y, Side side);
+	void placeDisk(CellPosition position, Side side);
 
 	int count(CellState target) const;
+
+	static bool boundsCheck(CellPosition position);
 
 private:
 	std::array<std::array<CellState, WIDTH>, HEIGHT> m_states;

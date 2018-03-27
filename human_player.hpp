@@ -10,7 +10,7 @@ class HumanPlayer : public Player
 public:
 	HumanPlayer(Side side) : Player(side) {}
 
-	virtual std::tuple<int, int> thinkNextMove(const Board& board) override;
+	virtual CellPosition thinkNextMove(const Board& board) override;
 };
 
 }  // namespace reversi
