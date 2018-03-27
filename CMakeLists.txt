@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project(reversi CXX)
+set(CMAKE_CXX_FLAGS "-std=c++17 -Wall -Wextra -pedantic -Wconversion -Wcast-qual -Wlogical-op")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -DNDEBUG")
+add_executable(reversi main.cpp board.cpp human_player.cpp sample_computer_player.cpp)
