@@ -10,18 +10,18 @@ namespace reversi
 class Player
 {
 public:
-	Player(Disk own_disk) : m_own_disk(own_disk) {}
+	Player(Side side) : m_side(side) {}
 	virtual ~Player() = default;
 
-	Disk getOwnDisk() const
+	Side getSide() const
 	{
-		return m_own_disk;
+		return m_side;
 	}
 
 	virtual std::tuple<int, int> thinkNextMove(const Board& board) = 0;
 
 private:
-	Disk m_own_disk;
+	Side m_side;
 };
 
 }  // namespace reversi

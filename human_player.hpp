@@ -8,7 +8,7 @@ namespace reversi
 class HumanPlayer : public Player
 {
 public:
-	HumanPlayer(Disk own_disk) : Player(own_disk) {}
+	HumanPlayer(Side side) : Player(side) {}
 
 	virtual std::tuple<int, int> thinkNextMove(const Board& board) override;
 };

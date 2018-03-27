@@ -27,7 +27,7 @@ std::tuple<int, int> HumanPlayer::thinkNextMove(const Board& board)
 		}
 		int x = col - 'a';
 		int y = row - '1';
-		if (board.isLegalMove(x, y, getOwnDisk())) {
+		if (board.isLegalMove(x, y, getSide())) {
 			return std::make_tuple(x, y);
 		}
 		std::cout << position_str << " is not a legal move!\n"

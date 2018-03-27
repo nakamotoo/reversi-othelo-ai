@@ -5,35 +5,45 @@
 namespace reversi
 {
 
-Disk flip(const Disk disk)
+Side getOpponentSide(const Side side)
 {
-	switch (disk) {
-	case Disk::BLACK:
-		return Disk::WHITE;
-	case Disk::WHITE:
-		return Disk::BLACK;
+	switch (side) {
+	case Side::BLACK:
+		return Side::WHITE;
+	case Side::WHITE:
+		return Side::BLACK;
 	default:
 		assert(false);
-		return disk;
+		return side;
 	}
 }
 
-std::ostream& operator<<(std::ostream& os, const Disk disk)
+std::ostream& operator<<(std::ostream& os, const Side side)
 {
-	switch (disk) {
-	case Disk::NONE:
-		os << "none";
-		break;
-	case Disk::BLACK:
+	switch (side) {
+	case Side::BLACK:
 		os << "black";
 		break;
-	case Disk::WHITE:
+	case Side::WHITE:
 		os << "white";
 		break;
 	default:
 		assert(false);
 	}
 	return os;
+}
+
+CellState getOwnState(Side side)
+{
+	switch (side) {
+	case Side::BLACK:
+		return CellState::BLACK;
+	case Side::WHITE:
+		return CellState::WHITE;
+	default:
+		assert(false);
+		return CellState::BLANK;
+	}
 }
 
 namespace
@@ -50,9 +60,9 @@ constexpr std::array<std::tuple<int, int>, 8> DIRECTIONS = {{
     std::make_tuple(1, 1),
 }};
 
-int countBoundedDisks(const Board& board, int x, int y, const Disk disk, const std::tuple<int, int> direction)
+int countBoundedDisks(const Board& board, int x, int y, const Side side, const std::tuple<int, int> direction)
 {
-	assert(board.get(x, y) == Disk::NONE);
+	assert(board.get(x, y) == CellState::BLANK);
 	int num_bounded_disks = 0;
 	while (true) {
 		x += std::get<0>(direction);
@@ -60,72 +70,69 @@ int countBoundedDisks(const Board& board, int x, int y, const Disk disk, const s
 		if (x < 0 || x >= Board::WIDTH || y < 0 || y >= Board::HEIGHT) {
 			return 0;
 		}
-		if (board.get(x, y) == Disk::NONE) {
+		if (board.get(x, y) == CellState::BLANK) {
 			return 0;
 		}
-		if (board.get(x, y) == disk) {
+		if (board.get(x, y) == getOwnState(side)) {
 			break;
 		}
-		assert(board.get(x, y) == flip(disk));
+		assert(board.get(x, y) == getOwnState(getOpponentSide(side)));
 		++num_bounded_disks;
 	}
 	return num_bounded_disks;
 }
 
-bool canFlip(const Board& board, const int x, const int y, const Disk disk, const std::tuple<int, int> direction)
+bool canFlip(const Board& board, const int x, const int y, const Side side, const std::tuple<int, int> direction)
 {
-	return countBoundedDisks(board, x, y, disk, direction) > 0;
+	return countBoundedDisks(board, x, y, side, direction) > 0;
 }
 
 }  // namespace
 
 Board::Board() : m_states()
 {
-	set(3, 3, Disk::WHITE);
-	set(3, 4, Disk::BLACK);
-	set(4, 3, Disk::BLACK);
-	set(4, 4, Disk::WHITE);
+	set(3, 3, CellState::WHITE);
+	set(3, 4, CellState::BLACK);
+	set(4, 3, CellState::BLACK);
+	set(4, 4, CellState::WHITE);
 }
 
-Disk Board::get(const int x, const int y) const
+CellState Board::get(const int x, const int y) const
 {
 	assert(0 <= x && x < WIDTH);
 	assert(0 <= y && y < HEIGHT);
 	return m_states[static_cast<std::size_t>(y)][static_cast<std::size_t>(x)];
 }
 
-void Board::set(const int x, const int y, const Disk disk)
+void Board::set(const int x, const int y, const CellState state)
 {
 	assert(0 <= x && x < WIDTH);
 	assert(0 <= y && y < HEIGHT);
-	assert(disk == Disk::NONE || disk == Disk::BLACK || disk == Disk::WHITE);
-	m_states[static_cast<std::size_t>(y)][static_cast<std::size_t>(x)] = disk;
+	m_states[static_cast<std::size_t>(y)][static_cast<std::size_t>(x)] = state;
 }
 
-bool Board::isLegalMove(const int x, const int y, const Disk disk) const
+bool Board::isLegalMove(const int x, const int y, const Side side) const
 {
-	assert(disk == Disk::BLACK || disk == Disk::WHITE);
 	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) {
 		return false;
 	}
-	if (get(x, y) != Disk::NONE) {
+	if (get(x, y) != CellState::BLANK) {
 		return false;
 	}
 	for (auto&& direction : DIRECTIONS) {
-		if (canFlip(*this, x, y, disk, direction)) {
+		if (canFlip(*this, x, y, side, direction)) {
 			return true;
 		}
 	}
 	return false;
 }
 
-std::vector<std::tuple<int, int>> Board::getAllLegalMoves(const Disk disk) const
+std::vector<std::tuple<int, int>> Board::getAllLegalMoves(const Side side) const
 {
-	assert(disk == Disk::BLACK || disk == Disk::WHITE);
 	std::vector<std::tuple<int, int>> legal_moves;
 	for (int y = 0; y < HEIGHT; ++y) {
 		for (int x = 0; x < WIDTH; ++x) {
-			if (isLegalMove(x, y, disk)) {
+			if (isLegalMove(x, y, side)) {
 				legal_moves.emplace_back(x, y);
 			}
 		}
@@ -133,24 +140,23 @@ std::vector<std::tuple<int, int>> Board::getAllLegalMoves(const Disk disk) const
 	return legal_moves;
 }
 
-void Board::placeDisk(const int x, const int y, const Disk disk)
+void Board::placeDisk(const int x, const int y, const Side side)
 {
-	assert(disk == Disk::BLACK || disk == Disk::WHITE);
-	assert(isLegalMove(x, y, disk));
+	assert(isLegalMove(x, y, side));
 	for (auto&& direction : DIRECTIONS) {
-		int num_bounded_disks = countBoundedDisks(*this, x, y, disk, direction);
+		int num_bounded_disks = countBoundedDisks(*this, x, y, side, direction);
 		int flip_x = x;
 		int flip_y = y;
 		for (int i = 0; i < num_bounded_disks; ++i) {
 			flip_x += std::get<0>(direction);
 			flip_y += std::get<1>(direction);
-			set(flip_x, flip_y, disk);
+			set(flip_x, flip_y, getOwnState(side));
 		}
 	}
-	set(x, y, disk);
+	set(x, y, getOwnState(side));
 }
 
-int Board::countDisks(Disk target) const
+int Board::count(const CellState target) const
 {
 	int count = 0;
 	for (auto&& row : m_states) {
@@ -171,15 +177,15 @@ std::ostream& operator<<(std::ostream& os, const Board& board)
 		   << (y + 1);
 		for (int x = 0; x < Board::WIDTH; ++x) {
 			os << ' ';
-			Disk disk = board.get(x, y);
-			switch (disk) {
-			case Disk::NONE:
+			CellState state = board.get(x, y);
+			switch (state) {
+			case CellState::BLANK:
 				os << '-';
 				break;
-			case Disk::BLACK:
+			case CellState::BLACK:
 				os << 'B';
 				break;
-			case Disk::WHITE:
+			case CellState::WHITE:
 				os << 'W';
 				break;
 			}

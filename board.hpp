@@ -9,16 +9,24 @@
 namespace reversi
 {
 
-enum class Disk : std::uint8_t
+enum class Side : std::uint8_t
 {
-	NONE,
 	BLACK,
 	WHITE
 };
 
-Disk flip(Disk disk);
+Side getOpponentSide(Side side);
 
-std::ostream& operator<<(std::ostream& os, Disk disk);
+std::ostream& operator<<(std::ostream& os, Side side);
+
+enum class CellState : std::uint8_t
+{
+	BLANK,
+	BLACK,
+	WHITE
+};
+
+CellState getOwnState(Side side);
 
 class Board
 {
@@ -28,18 +36,18 @@ public:
 
 	Board();
 
-	Disk get(int x, int y) const;
-	void set(int x, int y, Disk disk);
+	CellState get(int x, int y) const;
+	void set(int x, int y, CellState state);
 
-	bool isLegalMove(int x, int y, Disk disk) const;
-	std::vector<std::tuple<int, int>> getAllLegalMoves(Disk disk) const;
+	bool isLegalMove(int x, int y, Side side) const;
+	std::vector<std::tuple<int, int>> getAllLegalMoves(Side side) const;
 
-	void placeDisk(int x, int y, Disk disk);
+	void placeDisk(int x, int y, Side side);
 
-	int countDisks(Disk target) const;
+	int count(CellState target) const;
 
 private:
-	std::array<std::array<Disk, WIDTH>, HEIGHT> m_states;
+	std::array<std::array<CellState, WIDTH>, HEIGHT> m_states;
 };
 
 std::ostream& operator<<(std::ostream& os, const Board& board);

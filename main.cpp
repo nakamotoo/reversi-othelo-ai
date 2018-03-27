@@ -13,22 +13,22 @@ int main(int argc, char* argv[])
 {
 	using namespace reversi;
 
-	std::unordered_map<std::string, std::function<std::unique_ptr<Player>(Disk)>> player_types = {
-	    {"human", [](Disk disk) { return std::make_unique<HumanPlayer>(disk); }},
-	    {"sample", [](Disk disk) { return std::make_unique<SampleComputerPlayer>(disk); }},
+	std::unordered_map<std::string, std::function<std::unique_ptr<Player>(Side)>> player_types = {
+	    {"human", [](Side side) { return std::make_unique<HumanPlayer>(side); }},
+	    {"sample", [](Side side) { return std::make_unique<SampleComputerPlayer>(side); }},
 	};
 
-	auto make_player_from_arg = [&](Disk disk, const std::string& arg) {
+	auto make_player_from_arg = [&](Side side, const std::string& arg) {
 		auto it = player_types.find(arg);
 		if (it == player_types.end()) {
 			std::cerr << arg << " is not a valid type!" << std::endl;
 			std::exit(1);
 		}
-		return it->second(disk);
+		return it->second(side);
 	};
-	auto make_player = [&](Disk disk) {
+	auto make_player = [&](Side side) {
 		while (true) {
-			std::cout << "Input the " << disk << " player type > ";
+			std::cout << "Input the " << side << " player type > ";
 			std::string type;
 			std::cin >> type;
 			auto it = player_types.find(type);
@@ -36,22 +36,22 @@ int main(int argc, char* argv[])
 				std::cout << type << " is not a valid type!" << std::endl;
 				continue;
 			}
-			return it->second(disk);
+			return it->second(side);
 		}
 	};
 
 	const auto black_player
-	    = argc >= 3 ? make_player_from_arg(Disk::BLACK, argv[1]) : make_player(Disk::BLACK);
+	    = argc >= 3 ? make_player_from_arg(Side::BLACK, argv[1]) : make_player(Side::BLACK);
 	const auto white_player
-	    = argc >= 3 ? make_player_from_arg(Disk::WHITE, argv[2]) : make_player(Disk::WHITE);
+	    = argc >= 3 ? make_player_from_arg(Side::WHITE, argv[2]) : make_player(Side::WHITE);
 
 	Board board;
 
-	for (Disk turn = Disk::BLACK;; turn = flip(turn)) {
+	for (Side turn = Side::BLACK;; turn = getOpponentSide(turn)) {
 		std::cout << board << "\n"
 		          << std::endl;
 
-		if (board.countDisks(Disk::NONE) == 0) {
+		if (board.count(CellState::BLANK) == 0) {
 			// no empty square
 			break;
 		}
@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
 			continue;
 		}
 
-		auto& player = turn == Disk::BLACK ? *black_player : *white_player;
+		auto& player = turn == Side::BLACK ? *black_player : *white_player;
 
 		int x, y;
 		std::tie(x, y) = player.thinkNextMove(board);
