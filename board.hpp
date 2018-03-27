@@ -21,7 +21,7 @@ std::ostream& operator<<(std::ostream& os, Side side);
 
 enum class CellState : std::uint8_t
 {
-	BLANK,
+	EMPTY,
 	BLACK,
 	WHITE
 };

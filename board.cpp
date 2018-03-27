@@ -42,7 +42,7 @@ CellState getOwnState(Side side)
 		return CellState::WHITE;
 	default:
 		assert(false);
-		return CellState::BLANK;
+		return CellState::EMPTY;
 	}
 }
 
@@ -62,7 +62,7 @@ constexpr std::array<std::tuple<int, int>, 8> DIRECTIONS = {{
 
 int countBoundedDisks(const Board& board, int x, int y, const Side side, const std::tuple<int, int> direction)
 {
-	assert(board.get(x, y) == CellState::BLANK);
+	assert(board.get(x, y) == CellState::EMPTY);
 	int num_bounded_disks = 0;
 	while (true) {
 		x += std::get<0>(direction);
@@ -70,7 +70,7 @@ int countBoundedDisks(const Board& board, int x, int y, const Side side, const s
 		if (x < 0 || x >= Board::WIDTH || y < 0 || y >= Board::HEIGHT) {
 			return 0;
 		}
-		if (board.get(x, y) == CellState::BLANK) {
+		if (board.get(x, y) == CellState::EMPTY) {
 			return 0;
 		}
 		if (board.get(x, y) == getOwnState(side)) {
@@ -116,7 +116,7 @@ bool Board::isLegalMove(const int x, const int y, const Side side) const
 	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) {
 		return false;
 	}
-	if (get(x, y) != CellState::BLANK) {
+	if (get(x, y) != CellState::EMPTY) {
 		return false;
 	}
 	for (auto&& direction : DIRECTIONS) {
@@ -179,7 +179,7 @@ std::ostream& operator<<(std::ostream& os, const Board& board)
 			os << ' ';
 			CellState state = board.get(x, y);
 			switch (state) {
-			case CellState::BLANK:
+			case CellState::EMPTY:
 				os << '-';
 				break;
 			case CellState::BLACK:

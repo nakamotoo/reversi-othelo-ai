@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 		std::cout << board << "\n"
 		          << std::endl;
 
-		if (board.count(CellState::BLANK) == 0) {
+		if (board.count(CellState::EMPTY) == 0) {
 			// no empty square
 			break;
 		}
