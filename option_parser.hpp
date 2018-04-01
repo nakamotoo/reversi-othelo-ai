@@ -16,8 +16,8 @@ struct CommandLineParams
 	std::unique_ptr<Player> white_player;
 };
 
-using TypeStrToPlayerMap = std::unordered_map<std::string, std::function<std::unique_ptr<Player>(Side)>>;
+using PlayerTypeMap = std::unordered_map<std::string, std::function<std::unique_ptr<Player>(Side)>>;
 
-CommandLineParams parseCommandLineOptions(int argc, char* argv[], const TypeStrToPlayerMap& player_types);
+CommandLineParams parseCommandLineOptions(int argc, char* argv[], const PlayerTypeMap& player_types);
 
 }  // namespace reversi

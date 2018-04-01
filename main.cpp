@@ -1,3 +1,4 @@
+#include <array>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -20,6 +21,10 @@ int main(int argc, char* argv[])
 
 	auto command_line_params = parseCommandLineOptions(argc, argv, player_types);
 
+	std::array<std::unique_ptr<Player>, 2> players;
+	players.at(static_cast<std::size_t>(Side::BLACK)) = std::move(command_line_params.black_player);
+	players.at(static_cast<std::size_t>(Side::WHITE)) = std::move(command_line_params.white_player);
+
 	Board board;
 
 	for (Side turn = Side::BLACK;; turn = getOpponentSide(turn)) {
@@ -27,7 +32,7 @@ int main(int argc, char* argv[])
 		          << std::endl;
 
 		if (board.count(CellState::EMPTY) == 0) {
-			// no empty square
+			// no empty cell
 			break;
 		}
 		auto legal_moves = board.getAllLegalMoves(turn);
@@ -38,9 +43,7 @@ int main(int argc, char* argv[])
 			continue;
 		}
 
-		auto& turn_player = turn == Side::BLACK
-		                        ? *command_line_params.black_player
-		                        : *command_line_params.white_player;
+		auto& turn_player = *players.at(static_cast<std::size_t>(turn));
 
 		auto move = turn_player.thinkNextMove(board);
 		if (!board.isLegalMove(move, turn)) {

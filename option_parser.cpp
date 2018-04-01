@@ -24,7 +24,7 @@ void printSimpleUsage(std::ostream& os, const char* program_name)
 	os << "usage: " << program_name << " [-h] BLACK_PLYAER_TYPE WHITE_PLAYER_TYPE" << std::endl;
 }
 
-std::unique_ptr<Player> makePlayerFromType(const TypeStrToPlayerMap& player_types, const std::string& type, const Side side)
+std::unique_ptr<Player> makePlayerFromType(const PlayerTypeMap& player_types, const std::string& type, const Side side)
 {
 	auto it = player_types.find(type);
 	if (it == player_types.end()) {
@@ -36,7 +36,7 @@ std::unique_ptr<Player> makePlayerFromType(const TypeStrToPlayerMap& player_type
 
 }  // namespace
 
-CommandLineParams parseCommandLineOptions(int argc, char* argv[], const TypeStrToPlayerMap& player_types)
+CommandLineParams parseCommandLineOptions(int argc, char* argv[], const PlayerTypeMap& player_types)
 {
 	if (findHelpOption(argc, argv)) {
 		printSimpleUsage(std::cout, argv[0]);
