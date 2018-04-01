@@ -6,9 +6,9 @@
 #include <unordered_map>
 
 #include "board.hpp"
-#include "human_player.hpp"
 #include "option_parser.hpp"
-#include "sample_computer_player.hpp"
+#include "player/human_player.hpp"
+#include "player/sample_computer_player.hpp"
 
 int main(int argc, char* argv[])
 {
