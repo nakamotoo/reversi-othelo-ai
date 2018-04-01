@@ -2,7 +2,7 @@
 
 #include <array>
 #include <cstdint>
-#include <iostream>
+#include <ostream>
 #include <vector>
 
 namespace reversi

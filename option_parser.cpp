@@ -1,6 +1,13 @@
 #include <cstdlib>
+#include <iostream>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <utility>
 
+#include "board.hpp"
 #include "option_parser.hpp"
+#include "player.hpp"
 
 namespace reversi
 {

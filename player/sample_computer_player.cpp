@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "sample_computer_player.hpp"
 
 namespace reversi

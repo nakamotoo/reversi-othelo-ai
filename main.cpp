@@ -1,12 +1,16 @@
 #include <array>
+#include <cstdlib>
 #include <functional>
 #include <iostream>
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
 #include "board.hpp"
 #include "option_parser.hpp"
+#include "player.hpp"
 #include "player/human_player.hpp"
 #include "player/sample_computer_player.hpp"
 
