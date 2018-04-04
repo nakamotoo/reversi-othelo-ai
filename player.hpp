@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tuple>
+
 #include "board.hpp"
 
 namespace reversi
