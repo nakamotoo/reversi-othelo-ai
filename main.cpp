@@ -31,6 +31,8 @@ int main(int argc, char* argv[])
 
 	Board board;
 
+	int pass = 0; //相互パスの判定
+	
 	for (Side turn = Side::BLACK;; turn = getOpponentSide(turn)) {
 		std::cout << board << "\n"
 		          << std::endl;
@@ -41,10 +43,15 @@ int main(int argc, char* argv[])
 		}
 		auto legal_moves = board.getAllLegalMoves(turn);
 		if (legal_moves.empty()) {
-			// pass
-			std::cout << "turn = " << turn << ", move = Pass\n"
-			          << std::endl;
-			continue;
+		  // pass
+		  pass++;
+		  if(pass>=2){
+		    printf("両者パスしたのでこの試合は終了です。\n");
+		    return 0;
+		  }
+		  std::cout << "turn = " << turn << ", move = Pass\n"
+			    << std::endl;
+		  continue;
 		}
 
 		auto& turn_player = *players.at(static_cast<std::size_t>(turn));
@@ -58,7 +65,36 @@ int main(int argc, char* argv[])
 		          << std::endl;
 
 		board.placeDisk(move, turn);
+		pass = 0; //ここでpassを0にして2連パス以外を通さないようにする
 	}
+
+	 //勝敗の判定
+  int count_w = 0;
+  int count_b = 0;
+  for(int i = 0;i < Board::HEIGHT ;i++){
+    for(int j = 0;j < Board::WIDTH ;j++){
+      CellState state = board.get({i,j});
+      switch(state){
+      case CellState::EMPTY:
+	break;
+      case CellState::BLACK:
+	count_b++;
+	break;
+      case CellState::WHITE:
+	count_w++;
+	break;
+      }
+    }
+  }
+  printf("白が %d 個、黒が %d 個なので",count_w,count_b);
+  if(count_b > count_w){
+    printf("黒の勝ちです。");
+  }else if(count_b < count_w){
+    printf("白の勝ちです。");
+  }else{
+    printf("引き分けです。");
+  }
+  printf("\n");
 
 	return 0;
 }
