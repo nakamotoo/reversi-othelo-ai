@@ -14,7 +14,7 @@ CellPosition MinMaxPlayer::thinkNextMove(const Board &board) {
   int v;
   CellPosition best_step;
   // std::tie(v, best_step) = max_node(board, side, 0, 3, -10000, +10000, c);
-  std::tie(v, best_step) = negamax(board, side, 0, 6, -10000, +10000, c, side);
+  std::tie(v, best_step) = negamax(board, side, 0, 5, -10000, +10000, c, side);
   printf("finished! %d\n", v);
   std::cout << "best move " << best_step << "\n" << std::endl;
   // return board.getAllLegalMoves(getSide()).front();
