@@ -250,9 +250,9 @@ int Board::eval(const Side side) const {
   std::vector<CellPosition> legal_moves_own;
   std::vector<CellPosition> legal_moves_opponent;
   legal_moves_own = getAllLegalMoves(side);
-  legal_moves_opponent = getAllLegalMoves(getOpponentSide(side));
+  // legal_moves_opponent = getAllLegalMoves(getOpponentSide(side));
   int size_own = (int)legal_moves_own.size();
-  int size_opp = (int)legal_moves_opponent.size();
+  // int size_opp = (int)legal_moves_opponent.size();
   int j = size_own;
 
   int val = 0;
@@ -260,6 +260,14 @@ int Board::eval(const Side side) const {
   int enemy_val = 0;
   char s;
   CellState target = getOwnState(side);
+  CellState target_opp = getOwnState(getOpponentSide(side));
+
+  int total_own = count(target);
+  int total_enemy = count(target_opp);
+
+  if (total_own + total_enemy > 36) {
+    j = 0;
+  }
 
   for (int x = 0; x < 8; x++) {
     for (int y = 0; y < 8; y++) {
@@ -282,7 +290,6 @@ int Board::eval(const Side side) const {
       // printf("x, y = %d, %d, state = %c\n", x, y, s);
     }
   }
-
   // printf("own: %d, enemy: %d, val: %d\n", own_val, enemy_val, val);
   return val + j * 10;
 }
