@@ -8,6 +8,7 @@ add_executable(reversi
     main.cpp
     board.cpp
     player/human_player.cpp
+    player/minmax_player.cpp
     player/sample_computer_player.cpp
     option_parser.cpp)
 
